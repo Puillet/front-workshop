@@ -13,6 +13,28 @@
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
 }
+.header {
+    padding: 0 20px;
+    max-width: 100%;
+    z-index: 100;
+    position: absolute;
+    top: 10px;
+    .input {
+        width: 100%;
+        border: none;
+        border-radius: 0;
+        outline: none;
+        height: 3rem;
+        font-size: 16px;
+        background-color: white !important;
+        border-radius: 5px !important;
+        padding-left: 20px !important;
+        border-bottom: none !important;
+        -webkit-box-shadow: 0 8px 6px -6px lightgrey !important;
+        -moz-box-shadow: 0 8px 6px -6px lightgrey !important;
+        box-shadow: 0 8px 6px -6px lightgrey !important;
+    }
+}
 .title {
     font-weight: 700;
     background-color: #52D88A;
