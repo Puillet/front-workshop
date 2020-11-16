@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'front';
+
+  ngOnInit() {
+    const myMap = L.map('map').setView([47.2173, -1.5534], 11);
+ 
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+      attribution: 'Map'
+    }).addTo(myMap);
+  }
 }
