@@ -4,7 +4,7 @@
     z-index: 1;
 }
 .popup {
-    z-index: 10;
+    z-index: 100;
     width: 100%;
     background-color: white;
     position: absolute;
@@ -12,6 +12,7 @@
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
     display: none;
+    box-shadow: 0 10px 30px 5px grey !important;
     animation-name: fromBottom;
     animation-duration: 0.3s;
     .popup-content {
@@ -31,7 +32,6 @@
 }
 .header {
     padding: 0 20px;
-    max-width: 100%;
     z-index: 100;
     position: absolute;
     top: 10px;
@@ -52,16 +52,23 @@
         box-shadow: 0 8px 6px -6px lightgrey !important;
     }
 }
+@media screen and (min-width: 1024px) {
+    .header {
+        width: 40%;
+    }
+  }
 .title {
-    background-color: #52D88A;
+    background-color: black;
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
     padding: 5px 20px;
     display: flex;
     h1 {
         font-weight: 700;
-        font-size: 35px;
+        font-size: 31px;
         color: white;
+        max-width: 90%;
+        margin-top: 2px;
     }
     img {
         position: absolute;
@@ -70,7 +77,27 @@
     }
 }
 .more-btn {
-    background-color: #FF75BE;
-    color: white;
+    background-color: #ebe7e7;
+    color: black;
     font-weight: bold;
+}
+.less-btn {
+    background-color: #ebe7e7;
+    color: black;
+    font-weight: bold;
+}
+.expand {
+    height: 100%;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    .title {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+    }
+    .more-btn {
+        display: none;
+    }
+    .expand-content {
+        display: block !important;
+    }
 }

@@ -1,25 +1,34 @@
 <div class="header">
   <input autocapitalize="none" class="input" placeholder="Rechercher" required="">
 </div>
-<div id="map">
+<div class="row m-0">
+  <div id="map" class="col-sm-12 col-lg-8">
+  </div>
+  <div class="col-sm-12 col-lg-4 d-none d-lg-block">
+    
+  </div>
 </div>
+
 <div id="popup" class="popup">
-  <div class="title">
-    <h1>Hôtel Dieu</h1>
-    <img (click)="closePopup()" width="40" src="../assets/img/times-circle.svg">
+  <div id="popupHead" class="title">
+    <h1>{{ parking?.fields.grp_nom }}</h1>
+    <img (click)="closePopup()" width="35" src="../assets/img/times-circle.svg">
   </div>
   
   <div class="popup-content">
-    <div class="col-12 p-0 d-flex mb-3 align-middle">
+    <div class="col-12 p-0 d-flex mb-3">
       <img class="mr-3" width="40" src="../assets/img/parking-circle.svg">
-      <h4 class="content pt-2 align-middle">128 places libres</h4>
+      <h4 class="content pt-2">{{ parking?.fields.grp_disponible }} <span style="color: darkgray;">/ {{ parking?.fields.grp_exploitation }}</span></h4>
     </div>
-    <div class="col-12 p-0 d-flex mb-3 align-middle">
-      <img class="mr-3" width="35" src="../assets/img/graph-bar.svg">
-      <h4 class="content pt-2 align-middle">+16%</h4>
+    <div class="col-12 p-0 d-flex mb-3">
+      <img class="mr-3" width="30" src="../assets/img/graph-bar.svg">
+      <h4 class="content pt-2">+16%</h4>
+    </div>
+    <div class="col-12 p-0 d-none expand-content">
+      <button class="btn less-btn w-100" (click)="relax()">Voir moins</button>
     </div>
     <div class="col-12 p-0">
-      <button class="btn more-btn w-100">Voir plus</button>
+      <button class="btn more-btn w-100" (click)="expand()">Voir plus</button>
     </div>
   </div>
 </div>
