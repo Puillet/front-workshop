@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+import { Color, BaseChartDirective, Label } from 'ng2-charts';
+import { MapType } from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -13,14 +16,42 @@ export class AppComponent {
   parking: any;
   color: any;
 
+  public lineChartData: ChartDataSets[] = [
+    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Places occupées' },
+    //{ data: [65, 59, 70, 81, 56, 55, 40], label: 'Places estimées' }
+  ];
+  public lineChartLabels: Label[] = ['13h', '14h', '15h', '16h', '17h', '18h', '19h'];
+  public lineChartColors: Color[] = [
+    { // grey
+      backgroundColor: 'rgb(235,231,231)',
+      borderColor: '#000000',
+      pointBackgroundColor: '#000000',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    },
+    { // red
+      backgroundColor: 'rgba(255,0,0,0.3)',
+      borderColor: 'red',
+      pointBackgroundColor: 'rgba(148,159,177,1)',
+      pointBorderColor: '#fff',
+      pointHoverBackgroundColor: '#fff',
+      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+    }
+  ];
+  public lineChartLegend = true;
+  public lineChartType: ChartType = 'line';
+  public myMap: any;
+
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    const myMap = L.map('map', {zoomControl: false}).setView([47.21, -1.5534], 13);
+    this.myMap = L.map('map', {zoomControl: false});
+    this.myMap.setView([47.21, -1.5534], 13);
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
       attribution: 'Map'
-    }).addTo(myMap);
+    }).addTo(this.myMap);
 
     let promise = new Promise((resolve, reject) => {
       this.http.get<any>(`https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parkings-publics-nantes-disponibilites&q=&rows=30`)
@@ -52,8 +83,8 @@ export class AppComponent {
                     // Ouvrir la popup avec paramètres
                     this.openPopup(e, element, color);
                     // Zoom sur le marqueur au click
-                    myMap.setView([element.geometry.coordinates[1]-0.003, element.geometry.coordinates[0]], 15);
-                  }).addTo(myMap);
+                    this.myMap.setView([element.geometry.coordinates[1]-0.003, element.geometry.coordinates[0]], 15);
+                  }).addTo(this.myMap);
               }
             });
           },
@@ -96,6 +127,19 @@ export class AppComponent {
     const popup = document.getElementById('popup');
     if(popup) {
       popup.classList.remove('expand');
+    }
+  }
+
+  geolocation(position: { coords: { latitude: number; longitude: number; }; }) {
+    var latitude = position.coords.latitude;
+    var longitude = position.coords.longitude;
+    console.log(latitude, longitude);
+    console.log(this.myMap);
+  }
+
+  location() {
+    if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(this.geolocation);
     }
   }
 }
