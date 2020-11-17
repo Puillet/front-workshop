@@ -25,7 +25,8 @@
       <h4 class="content pt-2">+16%</h4>
     </div>
     <div class="col-12 p-0 d-none expand-content">
-      <button class="btn less-btn w-100" (click)="relax()">Voir moins</button>
+      <span>Dernière mise à jour : {{ parking?.record_timestamp|date: 'dd/MM/yyyy HH:mm' }}</span>
+      <button class="btn less-btn w-100 mt-2" (click)="relax()">Voir moins</button>
     </div>
     <div class="col-12 p-0">
       <button class="btn more-btn w-100" (click)="expand()">Voir plus</button>

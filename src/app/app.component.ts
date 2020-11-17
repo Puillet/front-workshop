@@ -27,14 +27,15 @@ export class AppComponent {
         .toPromise()
         .then(
           res => {
-            console.log(res.records);
+            console.log(res.records[27].record_timestamp, res.records[27].fields.grp_disponible);
             this.parkings = res?.records;
             this.parkings.forEach((element: any) => {
               // Couleur du marqueur
               let color: string;
-              if(element?.fields.grp_disponible < 50) {
+              let pourcentage = ((element?.fields.grp_disponible/element?.fields.grp_exploitation)*100);
+              if(pourcentage < 25) {
                 color = 'C70039';
-              } else if(element?.fields.grp_disponible > 50 && element?.fields.grp_disponible < 100) {
+              } else if(pourcentage > 25 && pourcentage < 75) {
                 color = 'F9813A';
               } else {
                 color = '52D88A';
@@ -47,14 +48,19 @@ export class AppComponent {
                     iconUrl: '../assets/img/ellipse'+color+'.svg',
                     iconSize: [30, 30],
                     shadowSize: [30, 30],
-                  })}).on('click', (e) => { this.openPopup(e, element, color) }).addTo(myMap);
+                  })}).on('click', (e) => { 
+                    // Ouvrir la popup avec paramètres
+                    this.openPopup(e, element, color);
+                    // Zoom sur le marqueur au click
+                    myMap.setView([element.geometry.coordinates[1]-0.003, element.geometry.coordinates[0]], 15);
+                  }).addTo(myMap);
               }
             });
           },
           msg => { reject(msg) }
         );
-    });
-    return promise;
+      });
+      return promise;
   }
 
   openPopup(e: any, parking: any, color: any) {
