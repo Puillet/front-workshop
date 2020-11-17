@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
@@ -10,8 +10,9 @@ import { MapType } from '@angular/compiler';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
+  myMap: any;
   parkings: any;
   parking: any;
   color: any;
@@ -41,7 +42,6 @@ export class AppComponent {
   ];
   public lineChartLegend = true;
   public lineChartType: ChartType = 'line';
-  public myMap: any;
 
   constructor(private http: HttpClient) { }
 
@@ -50,7 +50,7 @@ export class AppComponent {
     this.myMap.setView([47.21, -1.5534], 13);
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-      attribution: 'Map'
+      attribution: ''
     }).addTo(this.myMap);
 
     let promise = new Promise((resolve, reject) => {
@@ -76,9 +76,10 @@ export class AppComponent {
               if(element?.geometry?.coordinates) {
                 L.marker([element.geometry.coordinates[1], element.geometry.coordinates[0]], {
                   icon: L.icon({
-                    iconUrl: '../assets/img/ellipse'+color+'.svg',
+                    iconUrl: '../assets/img/parking'+color+'.svg',
                     iconSize: [30, 30],
                     shadowSize: [30, 30],
+                    iconAnchor: [15, 30]
                   })}).on('click', (e) => { 
                     // Ouvrir la popup avec paramètres
                     this.openPopup(e, element, color);
@@ -130,16 +131,20 @@ export class AppComponent {
     }
   }
 
-  geolocation(position: { coords: { latitude: number; longitude: number; }; }) {
-    var latitude = position.coords.latitude;
-    var longitude = position.coords.longitude;
-    console.log(latitude, longitude);
-    console.log(this.myMap);
-  }
-
   location() {
     if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.geolocation);
+      navigator.geolocation.getCurrentPosition((position) => {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        console.log(latitude, longitude);
+        this.myMap.setView([latitude, longitude], 17);
+        L.marker([latitude, longitude], {
+          icon: L.icon({
+            iconUrl: '../assets/img/ellipse.svg',
+            iconSize: [30, 30],
+            shadowSize: [30, 30],
+          })}).addTo(this.myMap);
+      });
     }
   }
 }
