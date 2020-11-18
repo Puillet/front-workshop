@@ -3,7 +3,6 @@ import * as L from 'leaflet';
 import { HttpClient } from '@angular/common/http';
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
-import { MapType } from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +15,7 @@ export class AppComponent implements OnInit {
   parkings: any;
   parking: any;
   color: any;
+  search: any = [];
 
   public lineChartData: ChartDataSets[] = [
     { data: [65, 59, 80, 81, 56, 55, 40], label: 'Places occupées' },
@@ -58,9 +58,10 @@ export class AppComponent implements OnInit {
         .toPromise()
         .then(
           res => {
-            console.log(res.records[27].record_timestamp, res.records[27].fields.grp_disponible);
             this.parkings = res?.records;
             this.parkings.forEach((element: any) => {
+              let item = { id: element?.fields.grp_identifiant, name: element?.fields.grp_nom};
+              this.search.push(item);
               // Couleur du marqueur
               let color: string;
               let pourcentage = ((element?.fields.grp_disponible/element?.fields.grp_exploitation)*100);
@@ -92,6 +93,7 @@ export class AppComponent implements OnInit {
           msg => { reject(msg) }
         );
       });
+      console.log(this.search);
       return promise;
   }
 
