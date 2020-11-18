@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as L from 'leaflet';
-import { HttpClient } from '@angular/common/http';
-import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
-import { Color, BaseChartDirective, Label } from 'ng2-charts';
+import {HttpClient} from '@angular/common/http';
+import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
+import {Color, BaseChartDirective, Label} from 'ng2-charts';
 
 @Component({
   selector: 'app-root',
@@ -12,13 +12,13 @@ import { Color, BaseChartDirective, Label } from 'ng2-charts';
 export class AppComponent implements OnInit {
 
   myMap: any;
-  parkings: any;
+  parkings: any = [];
   parking: any;
   color: any;
-  search: any = [];
+  parkingInput = '';
 
   public lineChartData: ChartDataSets[] = [
-    { data: [65, 59, 80, 81, 56, 55, 40], label: 'Places occupées' },
+    {data: [65, 59, 80, 81, 56, 55, 40], label: 'Places occupées'},
     //{ data: [65, 59, 70, 81, 56, 55, 40], label: 'Places estimées' }
   ];
   public lineChartLabels: Label[] = ['13h', '14h', '15h', '16h', '17h', '18h', '19h'];
@@ -43,7 +43,8 @@ export class AppComponent implements OnInit {
   public lineChartLegend = true;
   public lineChartType: ChartType = 'line';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   ngOnInit() {
     this.myMap = L.map('map', {zoomControl: false});
@@ -60,62 +61,68 @@ export class AppComponent implements OnInit {
           res => {
             this.parkings = res?.records;
             this.parkings.forEach((element: any) => {
-              let item = { id: element?.fields.grp_identifiant, name: element?.fields.grp_nom};
-              this.search.push(item);
               // Couleur du marqueur
               let color: string;
-              let pourcentage = ((element?.fields.grp_disponible/element?.fields.grp_exploitation)*100);
-              if(pourcentage < 25) {
+              let pourcentage = ((element?.fields.grp_disponible / element?.fields.grp_exploitation) * 100);
+              if (pourcentage < 25) {
                 color = 'C70039';
-              } else if(pourcentage > 25 && pourcentage < 75) {
+              } else if (pourcentage > 25 && pourcentage < 75) {
                 color = 'F9813A';
               } else {
                 color = '52D88A';
               }
 
               // Attribution et géolocalisation du marqueur
-              if(element?.geometry?.coordinates) {
+              if (element?.geometry?.coordinates) {
                 L.marker([element.geometry.coordinates[1], element.geometry.coordinates[0]], {
                   icon: L.icon({
-                    iconUrl: '../assets/img/parking'+color+'.svg',
+                    iconUrl: '../assets/img/parking' + color + '.svg',
                     iconSize: [30, 30],
                     shadowSize: [30, 30],
                     iconAnchor: [15, 30]
-                  })}).on('click', (e) => { 
-                    // Ouvrir la popup avec paramètres
-                    this.openPopup(e, element, color);
-                    // Zoom sur le marqueur au click
-                    this.myMap.setView([element.geometry.coordinates[1]-0.003, element.geometry.coordinates[0]], 15);
-                  }).addTo(this.myMap);
+                  })
+                }).on('click', (e) => {
+                  // Ouvrir la popup avec paramètres
+                  this.openPopup(e, element, color);
+                  // Zoom sur le marqueur au click
+                  this.myMap.setView([element.geometry.coordinates[1] - 0.003, element.geometry.coordinates[0]], 15);
+                }).addTo(this.myMap);
               }
             });
           },
-          msg => { reject(msg) }
+          msg => {
+            reject(msg);
+          }
         );
-      });
-      console.log(this.search);
-      return promise;
+    });
+    return promise;
+  }
+
+  get filteredParkings(): [] {
+    return this.parkings?.filter((parking) => {
+      return (parking.fields.grp_nom as string).includes(this.parkingInput);
+    }) ?? [];
   }
 
   openPopup(e: any, parking: any, color: any) {
     console.log(parking);
     this.parking = parking;
     this.color = color;
-    if(window.innerWidth < 1024) {
+    if (window.innerWidth < 1024) {
       const popup = document.getElementById('popup');
-      if(popup) {
+      if (popup) {
         popup.style.display = 'block';
       }
       const title = document.getElementById('popupHead');
-      if(title) {
-        title.style.backgroundColor = '#'+color;
+      if (title) {
+        title.style.backgroundColor = '#' + color;
       }
     }
   }
 
   closePopup() {
     const popup = document.getElementById('popup');
-    if(popup) {
+    if (popup) {
       popup.classList.remove('expand');
       popup.style.display = 'none';
     }
@@ -123,20 +130,20 @@ export class AppComponent implements OnInit {
 
   expand() {
     const popup = document.getElementById('popup');
-    if(popup) {
+    if (popup) {
       popup.classList.add('expand');
     }
   }
 
   relax() {
     const popup = document.getElementById('popup');
-    if(popup) {
+    if (popup) {
       popup.classList.remove('expand');
     }
   }
 
   location() {
-    if(navigator.geolocation) {
+    if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
@@ -147,7 +154,8 @@ export class AppComponent implements OnInit {
             iconUrl: '../assets/img/ellipse.svg',
             iconSize: [30, 30],
             shadowSize: [30, 30],
-          })}).addTo(this.myMap);
+          })
+        }).addTo(this.myMap);
       });
     }
   }
