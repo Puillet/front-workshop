@@ -17,12 +17,12 @@ export class AppComponent implements OnInit {
   color: any;
   parkingInput = '';
 
-  public lineChartData: ChartDataSets[] = [
-    {data: [65, 59, 80, 81, 56, 55, 40], label: 'Places occupées'},
+  lineChartData: ChartDataSets[] = [
+    {data: [65, 59, 80, 81, 55, 40], label: 'Places occupées'},
     //{ data: [65, 59, 70, 81, 56, 55, 40], label: 'Places estimées' }
   ];
-  public lineChartLabels: Label[] = ['13h', '14h', '15h', '16h', '17h', '18h', '19h'];
-  public lineChartColors: Color[] = [
+  lineChartLabels: Label[] = ['13h', '14h', '15h', '16h', '17h', '18h'];
+  lineChartColors: Color[] = [
     { // grey
       backgroundColor: 'rgb(235,231,231)',
       borderColor: '#000000',
@@ -40,8 +40,8 @@ export class AppComponent implements OnInit {
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     }
   ];
-  public lineChartLegend = true;
-  public lineChartType: ChartType = 'line';
+  lineChartLegend = true;
+  lineChartType: ChartType = 'line';
 
   constructor(private http: HttpClient) {
   }
