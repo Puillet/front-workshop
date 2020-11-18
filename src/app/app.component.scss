@@ -67,7 +67,7 @@
     .header {
         width: 40%;
     }
-  }
+}
 .title {
     background-color: black;
     border-top-left-radius: 25px;
@@ -113,5 +113,29 @@
     }
     .expand-content {
         display: block !important;
+    }
+}
+.side-content {
+    overflow-y: scroll;
+    height: 100vh;
+    h1 {
+        font-weight: 700;
+        font-size: 30px;
+    }
+    h4 {
+        font-weight: 700;
+        font-size: 20px;
+    }
+}
+.welcome {
+    z-index: 100;
+    width: 100%;
+    background-color: black;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    h1 {
+        font-weight: 700;
+        font-size: 22px;
     }
 }

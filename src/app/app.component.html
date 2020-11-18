@@ -7,12 +7,52 @@
 <div class="row m-0">
   <div id="map" class="col-sm-12 col-lg-8">
   </div>
-  <div class="col-sm-12 col-lg-4 d-none d-lg-block">
+  <!-- Desktop side -->
+  <div *ngIf="parking" class="col-sm-12 col-lg-4 mt-3 d-none d-lg-block side-content">
+    <div>
+      <h1>{{ parking?.fields.grp_nom }}</h1>
+    </div>
     
+    <div class="popup-content">
+      <div class="col-12 p-0 d-flex mb-3">
+        <img class="mr-3" width="40" src="../assets/img/parking-circle.svg">
+        <h4 class="content pt-2">{{ parking?.fields.grp_disponible }} libres <span style="color: darkgray;">/ {{ parking?.fields.grp_exploitation }}</span></h4>
+      </div>
+      <div class="col-12 p-0 d-flex">
+        <img class="mr-3" width="30" src="../assets/img/graph-bar.svg">
+        <h4 class="content pt-2">+7 places</h4>
+      </div>
+      <div class="col-12 p-0 d-flex mb-3">
+        <span>Dans la prochaine heure</span>
+      </div>
+      
+      <div class="col-12 p-0">
+        <h4 class="content m-0">Evolutions de la journée</h4>
+        <span>Places occupées</span>
+      </div>
+      <div class="col-12 p-0">
+        <canvas class="mb-3" baseChart width="400" height="400"
+                  [datasets]="lineChartData"
+                  [labels]="lineChartLabels"
+                  [colors]="lineChartColors"
+                  [legend]="lineChartLegend"
+                  [chartType]="lineChartType">
+        </canvas>
+      </div>
+      <div class="col-12 p-0 d-none expand-content">
+        <span>Dernière mise à jour : {{ parking?.record_timestamp|date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+    </div>
   </div>
 </div>
 
-<div id="popup" class="popup">
+<!-- Message de bienvenue -->
+<div *ngIf="!parking" class="welcome d-lg-none px-3">
+  <h1 class="mt-3 mb-3">Sélectionner un parking</h1>
+</div>
+
+<!-- Popup mobile & tablet -->
+<div *ngIf="parking" id="popup" class="popup d-lg-none">
   <div id="popupHead" class="title">
     <h1>{{ parking?.fields.grp_nom }}</h1>
     <img (click)="closePopup()" width="35" src="../assets/img/times-circle.svg">

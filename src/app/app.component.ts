@@ -99,13 +99,15 @@ export class AppComponent implements OnInit {
     console.log(parking);
     this.parking = parking;
     this.color = color;
-    const popup = document.getElementById('popup');
-    if(popup) {
-      popup.style.display = 'block';
-    }
-    const title = document.getElementById('popupHead');
-    if(title) {
-      title.style.backgroundColor = '#'+color;
+    if(window.innerWidth < 1024) {
+      const popup = document.getElementById('popup');
+      if(popup) {
+        popup.style.display = 'block';
+      }
+      const title = document.getElementById('popupHead');
+      if(title) {
+        title.style.backgroundColor = '#'+color;
+      }
     }
   }
 
