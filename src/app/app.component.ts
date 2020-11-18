@@ -77,15 +77,13 @@ export class AppComponent implements OnInit {
                 L.marker([element.geometry.coordinates[1], element.geometry.coordinates[0]], {
                   icon: L.icon({
                     iconUrl: '../assets/img/parking' + color + '.svg',
-                    iconSize: [30, 30],
-                    shadowSize: [30, 30],
-                    iconAnchor: [15, 30]
+                    iconSize: [40, 40],
+                    shadowSize: [40, 40],
+                    iconAnchor: [20, 40]
                   })
                 }).on('click', (e) => {
                   // Ouvrir la popup avec paramètres
-                  this.openPopup(e, element, color);
-                  // Zoom sur le marqueur au click
-                  this.myMap.setView([element.geometry.coordinates[1] - 0.003, element.geometry.coordinates[0]], 15);
+                  this.openPopup(element);
                 }).addTo(this.myMap);
               }
             });
@@ -100,16 +98,29 @@ export class AppComponent implements OnInit {
 
   get filteredParkings(): [] {
     return this.parkings?.filter((parking) => {
-      return (parking.fields.grp_nom as string).includes(this.parkingInput);
+      return (parking.fields.grp_nom as string).toLowerCase().includes(this.parkingInput.toLowerCase());
     }) ?? [];
   }
 
-  openPopup(e: any, parking: any, color: any) {
+  openPopup(parking: any) {
+    this.parkingInput = '';
+    let pourcentage = ((parking?.fields.grp_disponible / parking?.fields.grp_exploitation) * 100);
+    let color;
+    if (pourcentage < 25) {
+      color = 'C70039';
+    } else if (pourcentage > 25 && pourcentage < 75) {
+      color = 'F9813A';
+    } else {
+      color = '52D88A';
+    }
     console.log(parking);
     this.parking = parking;
-    this.color = color;
+    // Zoom sur le marqueur au click
+    this.myMap.setView([parking.geometry.coordinates[1] - 0.003, parking.geometry.coordinates[0]], 15);
+    // Ouvrir popup
     if (window.innerWidth < 1024) {
       const popup = document.getElementById('popup');
+      console.log(popup);
       if (popup) {
         popup.style.display = 'block';
       }

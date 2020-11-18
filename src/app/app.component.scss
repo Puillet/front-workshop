@@ -18,7 +18,6 @@
     animation-duration: 0.3s;
     .popup-content {
         padding: 10px 20px;
-        margin-top: 60px;
         .content {
             font-weight: 700;
         }
@@ -74,7 +73,8 @@
     border-top-right-radius: 25px;
     padding: 5px 20px;
     display: flex;
-    position: fixed;
+    position: sticky;
+    top: 0;
     width: 100%;
     z-index: 100;
     h1 {
@@ -137,5 +137,15 @@
     h1 {
         font-weight: 700;
         font-size: 22px;
+    }
+}
+.listItem {
+    max-height: 200px;
+    background-color: white;
+    border-radius: 5px;
+    margin-top: 5px;
+    display: table;
+    p {
+        cursor: pointer;
     }
 }

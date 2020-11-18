@@ -1,13 +1,10 @@
 <div class="header">
-  <input  autocapitalize="none" [(ngModel)]="parkingInput" class="input" placeholder="Rechercher" required="">
+  <input autocapitalize="none" [(ngModel)]="parkingInput" class="input" placeholder="Rechercher" required="">
   <button class="btn btn-light" (click)="location()">
     <img src="../assets/img/crosshairs.svg">
   </button>
-</div>
-
-<div>
-  <div *ngIf="(filteredParkings.length != parkings.length)" style="max-height: 200px">
-    <p *ngFor="let item of filteredParkings" (click)="openPopup(null, item, 'red')">{{ item.fields.grp_nom}}</p>
+  <div *ngIf="(filteredParkings.length != parkings.length)" class="listItem pt-2">
+    <p *ngFor="let item of filteredParkings" (click)="openPopup(item)" class="mx-3 mt-2 p-0">{{ item?.fields.grp_nom }}</p>
   </div>
 </div>
 
