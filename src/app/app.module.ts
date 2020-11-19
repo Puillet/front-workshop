@@ -15,10 +15,10 @@ import { environment } from '../environments/environment';
     imports: [
         BrowserModule,
         AppRoutingModule,
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
         HttpClientModule,
         ChartsModule,
         FormsModule,
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' })
     ],
   providers: [],
   bootstrap: [AppComponent]
