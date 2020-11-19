@@ -3,7 +3,9 @@ import * as L from 'leaflet';
 import {HttpClient} from '@angular/common/http';
 import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
 import {Color, BaseChartDirective, Label} from 'ng2-charts';
-import dayjs = require('dayjs');
+import * as dayjs from 'dayjs';
+import * as customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat)
 
 @Component({
   selector: 'app-root',
@@ -16,6 +18,7 @@ export class AppComponent implements OnInit {
   parkings: any = [];
   parking: any;
   color: any;
+  estimation: any;
   parkingInput = '';
 
   lineChartData: ChartDataSets[] = [
@@ -48,37 +51,29 @@ export class AppComponent implements OnInit {
       attribution: ''
     }).addTo(this.myMap);
 
-    let promise = new Promise((resolve, reject) => {
-      this.http.get<any>(`https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parkings-publics-nantes-disponibilites&q=&rows=30`)
-        .toPromise()
-        .then(
-          res => {
-            this.parkings = res?.records;
-            this.parkings.forEach((element: any) => {
-              // Couleur du marqueur
-              let color = this.getColor((element?.fields.grp_disponible / element?.fields.grp_exploitation) * 100);
-              // Attribution et géolocalisation du marqueur
-              if (element?.geometry?.coordinates) {
-                L.marker([element.geometry.coordinates[1], element.geometry.coordinates[0]], {
-                  icon: L.icon({
-                    iconUrl: '../assets/img/parking' + color + '.svg',
-                    iconSize: [40, 40],
-                    shadowSize: [40, 40],
-                    iconAnchor: [20, 40]
-                  })
-                }).on('click', (e) => {
-                  // Ouvrir la popup avec paramètres
-                  this.openPopup(element);
-                }).addTo(this.myMap);
-              }
-            });
-          },
-          msg => {
-            reject(msg);
+    this.http.get<any>(`https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parkings-publics-nantes-disponibilites&q=&rows=30`).subscribe(
+      res => {
+        this.parkings = res?.records;
+        res?.records.forEach((element: any) => {
+          // Couleur du marqueur
+          let color = this.getColor((element?.fields.grp_disponible / element?.fields.grp_exploitation) * 100);
+          // Attribution et géolocalisation du marqueur
+          if (element?.geometry?.coordinates) {
+            L.marker([element.geometry.coordinates[1], element.geometry.coordinates[0]], {
+              icon: L.icon({
+                iconUrl: '../assets/img/parking' + color + '.svg',
+                iconSize: [40, 40],
+                shadowSize: [40, 40],
+                iconAnchor: [20, 40]
+              })
+            }).on('click', () => {
+              // Ouvrir la popup avec paramètres
+              this.openPopup(element);
+            }).addTo(this.myMap);
           }
-        );
-    });
-    return promise;
+        });
+      }
+    );
   }
 
   get filteredParkings(): any [] {
@@ -88,8 +83,8 @@ export class AppComponent implements OnInit {
   }
 
   openPopup(parking: any) {
-    console.log(parking);
     this.parkingInput = '';
+    this.estimation = '';
     let color = this.getColor((parking?.fields.grp_disponible / parking?.fields.grp_exploitation) * 100);
     this.parking = parking;
 
@@ -99,16 +94,14 @@ export class AppComponent implements OnInit {
     // Récupérer données stats
     this.http.get<any>(`http://172.16.7.22:5000/${parking?.fields.idobj}`).subscribe(
       res => {
-        console.log(res);
+        this.estimation = res.data.estimate;
         this.lineChartData[0].data = [];
         this.lineChartLabels = [];
 
-        res.data.last_records.forEach((element: any) => {
-          console.log(element);
+        res.data.last_records.reverse().forEach((element: any) => {
           this.lineChartData[0].data?.push(element.nbr_places_occupees);
-          const hour = dayjs(element.date, {format: 'DD/MM/YYYY HH:mm:ss'}).hour();
-          console.log(hour);
-          this.lineChartLabels.push(hour.toString());
+          const hour = dayjs(element.date, 'DD/MM/YYYY HH:mm:ss').hour();
+          this.lineChartLabels.push(hour.toString() + 'h');
         });
 
         this.chart?.update();
@@ -167,7 +160,6 @@ export class AppComponent implements OnInit {
       navigator.geolocation.getCurrentPosition((position) => {
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
-        console.log(latitude, longitude);
         this.myMap.setView([latitude, longitude], 17);
         L.marker([latitude, longitude], {
           icon: L.icon({

@@ -22,17 +22,16 @@
         <img class="mr-3" width="40" src="../assets/img/parking-circle.svg">
         <h4 class="content pt-2">{{ parking?.fields.grp_disponible }} libres <span style="color: darkgray;">/ {{ parking?.fields.grp_exploitation }}</span></h4>
       </div>
-      <div class="col-12 p-0 d-flex">
+      <div *ngIf="estimation" class="col-12 p-0 d-flex">
         <img class="mr-3" width="30" src="../assets/img/graph-bar.svg">
-        <h4 class="content pt-2">+7 places</h4>
+        <h4 class="content pt-2">{{ estimation }} places occupées</h4>
       </div>
-      <div class="col-12 p-0 d-flex mb-3">
+      <div *ngIf="estimation" class="col-12 p-0 d-flex mb-3">
         <span>Dans la prochaine heure</span>
       </div>
 
       <div class="col-12 p-0">
         <h4 class="content m-0">Evolutions de la journée</h4>
-        <span>Places occupées</span>
       </div>
       <div class="col-12 p-0">
         <canvas class="mb-3" baseChart width="400" height="400"
@@ -67,17 +66,16 @@
       <img class="mr-3" width="40" src="../assets/img/parking-circle.svg">
       <h4 class="content pt-2">{{ parking?.fields.grp_disponible }} libres <span style="color: darkgray;">/ {{ parking?.fields.grp_exploitation }}</span></h4>
     </div>
-    <div class="col-12 p-0 d-flex">
+    <div *ngIf="estimation" class="col-12 p-0 d-flex">
       <img class="mr-3" width="30" src="../assets/img/graph-bar.svg">
-      <h4 class="content pt-2">+7 places</h4>
+      <h4 class="content pt-2">{{ estimation }} places occupées</h4>
     </div>
-    <div class="col-12 p-0 d-flex mb-3">
+    <div *ngIf="estimation" class="col-12 p-0 d-flex mb-3">
       <span>Dans la prochaine heure</span>
     </div>
 
     <div class="col-12 p-0 d-none expand-content">
       <h4 class="content m-0">Evolutions de la journée</h4>
-      <span>Places occupées</span>
     </div>
     <div class="col-12 p-0 d-none expand-content">
       <canvas class="mb-3" baseChart width="400" height="400"
