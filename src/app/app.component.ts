@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import * as L from 'leaflet';
 import {HttpClient} from '@angular/common/http';
 import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
@@ -18,10 +18,9 @@ export class AppComponent implements OnInit {
   parkingInput = '';
 
   lineChartData: ChartDataSets[] = [
-    {data: [65, 59, 80, 81, 55, 40], label: 'Places occupées'},
-    //{ data: [65, 59, 70, 81, 56, 55, 40], label: 'Places estimées' }
+    { data: [], label: 'Places occupées' }
   ];
-  lineChartLabels: Label[] = ['13h', '14h', '15h', '16h', '17h', '18h'];
+  lineChartLabels: Label[] = [];
   lineChartColors: Color[] = [
     { // grey
       backgroundColor: 'rgb(235,231,231)',
@@ -30,18 +29,12 @@ export class AppComponent implements OnInit {
       pointBorderColor: '#fff',
       pointHoverBackgroundColor: '#fff',
       pointHoverBorderColor: 'rgba(148,159,177,0.8)'
-    },
-    { // red
-      backgroundColor: 'rgba(255,0,0,0.3)',
-      borderColor: 'red',
-      pointBackgroundColor: 'rgba(148,159,177,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(148,159,177,0.8)'
     }
   ];
   lineChartLegend = true;
   lineChartType: ChartType = 'line';
+
+  @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective | undefined;
 
   constructor(private http: HttpClient) {
   }
@@ -103,9 +96,20 @@ export class AppComponent implements OnInit {
     this.myMap.setView([parking.geometry.coordinates[1] - 0.003, parking.geometry.coordinates[0]], 15);
 
     // Récupérer données stats
-    this.http.get<any>(``).subscribe(
+    this.http.get<any>(`http://172.16.7.22:5000/${parking?.fields.idobj}`).subscribe(
       res => {
         console.log(res);
+        this.lineChartData[0].data = [];
+        this.lineChartLabels = [];
+
+        res.data.last_records.forEach((element: any) => {
+          console.log(element);
+          this.lineChartData[0].data?.push(element.nbr_places_occupees);
+          // TODO
+          this.lineChartLabels.push(element.date);
+        });
+        
+        this.chart?.update();
       },
       err => {
         console.log(err);
@@ -114,7 +118,6 @@ export class AppComponent implements OnInit {
     // Ouvrir popup
     if (window.innerWidth < 1024) {
       const popup = document.getElementById('popup');
-      console.log(popup);
       if (popup) {
         popup.style.display = 'block';
       }
