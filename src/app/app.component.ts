@@ -51,29 +51,37 @@ export class AppComponent implements OnInit {
       attribution: ''
     }).addTo(this.myMap);
 
-    this.http.get<any>(`https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parkings-publics-nantes-disponibilites&q=&rows=30`).subscribe(
-      res => {
-        this.parkings = res?.records;
-        res?.records.forEach((element: any) => {
-          // Couleur du marqueur
-          let color = this.getColor((element?.fields.grp_disponible / element?.fields.grp_exploitation) * 100);
-          // Attribution et géolocalisation du marqueur
-          if (element?.geometry?.coordinates) {
-            L.marker([element.geometry.coordinates[1], element.geometry.coordinates[0]], {
-              icon: L.icon({
-                iconUrl: '../assets/img/parking' + color + '.svg',
-                iconSize: [40, 40],
-                shadowSize: [40, 40],
-                iconAnchor: [20, 40]
-              })
-            }).on('click', () => {
-              // Ouvrir la popup avec paramètres
-              this.openPopup(element);
-            }).addTo(this.myMap);
+    let promise = new Promise((resolve, reject) => {
+      this.http.get<any>(`https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parkings-publics-nantes-disponibilites&q=&rows=30`)
+        .toPromise()
+        .then(
+          res => {
+            this.parkings = res?.records;
+            res?.records.forEach((element: any) => {
+              // Couleur du marqueur
+              let color = this.getColor((element?.fields.grp_disponible / element?.fields.grp_exploitation) * 100);
+              // Attribution et géolocalisation du marqueur
+              if (element?.geometry?.coordinates) {
+                L.marker([element.geometry.coordinates[1], element.geometry.coordinates[0]], {
+                  icon: L.icon({
+                    iconUrl: '../assets/img/parking' + color + '.svg',
+                    iconSize: [40, 40],
+                    shadowSize: [40, 40],
+                    iconAnchor: [20, 40]
+                  })
+                }).on('click', () => {
+                  // Ouvrir la popup avec paramètres
+                  this.openPopup(element);
+                }).addTo(this.myMap);
+              }
+            });
+          },
+          msg => {
+            reject(msg);
           }
-        });
-      }
-    );
+        );
+    });
+    return promise;
   }
 
   get filteredParkings(): any [] {
@@ -83,6 +91,7 @@ export class AppComponent implements OnInit {
   }
 
   openPopup(parking: any) {
+    console.log(parking);
     this.parkingInput = '';
     this.estimation = '';
     let color = this.getColor((parking?.fields.grp_disponible / parking?.fields.grp_exploitation) * 100);
