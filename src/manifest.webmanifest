@@ -3,7 +3,7 @@
   "short_name": "FIAK",
   "theme_color": "#000000",
   "background_color": "#fafafa",
-  "display": "standalone",
+  "display": "fullscreen",
   "scope": "./",
   "start_url": "./",
   "icons": [
