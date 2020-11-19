@@ -118,13 +118,23 @@
 .side-content {
     overflow-y: scroll;
     height: 100vh;
+    animation-name: fromRight;
+    animation-duration: 0.3s;
     h1 {
         font-weight: 700;
         font-size: 30px;
     }
     h4 {
         font-weight: 700;
-        font-size: 20px;
+        font-size: 20px; 
+    }
+}
+@keyframes fromRight {
+    from {
+        right: -100%;
+    }
+    to {
+        right: 0%;
     }
 }
 .welcome {
