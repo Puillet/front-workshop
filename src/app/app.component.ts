@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
     this.myMap = L.map('map', {zoomControl: false});
     this.myMap.setView([47.21, -1.5534], 13);
 
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
       attribution: ''
     }).addTo(this.myMap);
 
