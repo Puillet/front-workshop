@@ -56,11 +56,14 @@ export class AppComponent implements OnInit {
 
     return this.http.get<any>(`https://data.nantesmetropole.fr/api/records/1.0/search/?dataset=244400404_parkings-publics-nantes-disponibilites&q=&rows=30`)
       .toPromise()
-      .then(result => this.parkings = result?.records);
+      .then(result => {
+        this.parkings = result?.records;
+        this.parkingMarkers();
+      });
   }
 
-  get markers() {
-    this.parkings?.forEach((element: any) => {
+  parkingMarkers() {
+    return this.parkings?.map((element: any) => {
       const color = this.parkingColor(element);
       // Attribution et géolocalisation du marqueur
       if (element?.geometry?.coordinates) {
@@ -98,6 +101,8 @@ export class AppComponent implements OnInit {
     } else {
       color = '52D88A';
     }
+
+    return color;
   }
 
   openPopup(e: any, parking: any, color: any) {
