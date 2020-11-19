@@ -87,7 +87,7 @@ export class AppComponent implements OnInit {
     return promise;
   }
 
-  get filteredParkings(): [] {
+  get filteredParkings(): any [] {
     return this.parkings?.filter((parking: { fields: { grp_nom: string; }; }) => {
       return (parking.fields.grp_nom as string).toLowerCase().includes(this.parkingInput.toLowerCase());
     }) ?? [];
@@ -101,6 +101,15 @@ export class AppComponent implements OnInit {
 
     // Zoom sur le marqueur au click
     this.myMap.setView([parking.geometry.coordinates[1] - 0.003, parking.geometry.coordinates[0]], 15);
+
+    // Récupérer données stats
+    this.http.get<any>(``).subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      });
     
     // Ouvrir popup
     if (window.innerWidth < 1024) {
