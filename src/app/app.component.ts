@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import {HttpClient} from '@angular/common/http';
 import {ChartDataSets, ChartOptions, ChartType} from 'chart.js';
 import {Color, BaseChartDirective, Label} from 'ng2-charts';
+import dayjs = require('dayjs');
 
 @Component({
   selector: 'app-root',
@@ -105,16 +106,17 @@ export class AppComponent implements OnInit {
         res.data.last_records.forEach((element: any) => {
           console.log(element);
           this.lineChartData[0].data?.push(element.nbr_places_occupees);
-          // TODO
-          this.lineChartLabels.push(element.date);
+          const hour = dayjs(element.date, {format: 'DD/MM/YYYY HH:mm:ss'}).hour();
+          console.log(hour);
+          this.lineChartLabels.push(hour.toString());
         });
-        
+
         this.chart?.update();
       },
       err => {
         console.log(err);
       });
-    
+
     // Ouvrir popup
     if (window.innerWidth < 1024) {
       const popup = document.getElementById('popup');
